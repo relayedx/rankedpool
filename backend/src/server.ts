@@ -1,5 +1,12 @@
 import express from 'express'
+import dotenv from 'dotenv'
+import { connectDB } from '../config/db'
 
+// load env variables
+dotenv.config()
+
+// connect to DB & get server handle
+connectDB()
 const app = express()
 
 // middleware
