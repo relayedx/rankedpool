@@ -3,25 +3,26 @@ import dotenv from 'dotenv'
 import { connectDB } from '../config/db'
 
 // load env variables
-dotenv.config()
+dotenv.config();
 
 // connect to DB & get server handle
-connectDB()
-const app = express()
+connectDB();
+const app = express();
 
 // middleware
-app.use(express.json())
+app.use(express.json());
 
 //routes
+app.post('/');
 
 // check server
 app.get('/', (req, res) => {
-    res.send('server is running...')
+    res.send('server is running...');
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
 // allow server to listen for reqs
 app.listen(PORT, () => {
-    console.log(`Server has a new connection on port: ${PORT}`)
+    console.log(`Server has a new connection on port: ${PORT}`);
 })
