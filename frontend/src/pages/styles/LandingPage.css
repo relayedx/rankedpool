@@ -1,43 +1,86 @@
-.logo {
-    width: 100px;
-    height: auto;
-    display: block;
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 80px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  padding-bottom: 15px;
 }
 
-.nav-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    height: 64px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 100;
+.nav-logo {
+  padding-top: 10px;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+  display: block;
+  border-radius: 12px;
 }
 
 .nav-auth {
-    color: inherit;
-    text-decoration: none;
-    font-family: Verdana;
-    font-size: 14px;
+  color: inherit;
+  text-decoration: none;
+  font-family: Verdana;
+  font-size: 14px;
+  padding-top: 10px;
+}
+
+.about-section {
+  width: 100%;
+  padding: 4rem 1.5rem;
+  padding: 64px;
+  display: flex;
+  justify-content: center;
+}
+
+.about-container {
+  max-width: 1200px;
+  width: 100%;
+  text-align: center;
 }
 
 .about-header {
-    padding-top: 64px;
-    text-align: center;
-    font: Verdana;
-}
-
-.about-image-container {
-    text-align: center;
+  padding-top: 50px;
+  padding-bottom: 15px;
+  font-family: Verdana;
 }
 
 .about-image {
-    width: 400px;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 15px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
 
+.about-info {
+  font-family: Verdana;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  width: 100%;
+  max-width: 750px;
+  line-height: 1.8;
+  padding: 2 1rem;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* mobile overrides */
+@media (max-width: 768px) {
+  .about-image {
+    max-width: 100%;
+  }
+
+  .about-section {
+    padding: 2rem 1rem;
+  }
 }
