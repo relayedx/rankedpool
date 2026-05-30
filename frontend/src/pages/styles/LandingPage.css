@@ -31,7 +31,7 @@
   text-decoration: none;
   font-family: Verdana;
   font-size: 14px;
-  padding-top: 10px;
+  padding-top: 15px;
 }
 
 .about-section {
@@ -61,6 +61,7 @@
   height: auto;
   display: block;
   margin: 0 auto;
+  padding-bottom: 10px;
 }
 
 .about-info {
