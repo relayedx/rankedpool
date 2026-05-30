@@ -1,6 +1,7 @@
 import logo from '../images/rankedpool-logo.png'
 import aboutImage from '../images/rankedpool-about-image.png'
 import './styles/LandingPage.css'
+import { Link } from 'react-router-dom'
 
 export function LandingPage() {
   return (
@@ -12,7 +13,7 @@ export function LandingPage() {
                 <img src={logo} alt="logo" className="logo"/>
               </a>
           </div>
-          <a href="#" className="nav-auth">Login / Signup</a>
+          <Link to="/login" className="nav-auth">Login / Signup</Link>
         </div>
       </nav>
       <section className="about-section">
@@ -26,10 +27,6 @@ export function LandingPage() {
           </p>
         </div>
       </section>
-  
-
-
-
     </>
   )
 }
