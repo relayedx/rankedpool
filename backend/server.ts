@@ -1,6 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import { connectDB } from '../config/db'
+import { connectDB } from './config/db'
 
 // load env variables
 dotenv.config();
@@ -13,6 +13,7 @@ const app = express();
 app.use(express.json());
 
 //routes
+app.use('/', require('./routes/pages'))
 app.post('/');
 
 // check server
