@@ -3,15 +3,10 @@ import mongoose from 'mongoose'
 export type Rank = 'bronze' | 'iron' | 'silver' | 'gold' | 'diamond'
 
 const userSchema = new mongoose.Schema({
-    auth0Id: {
+    clerkId: {
         type: String,
         required: true,
         unique: true
-    },
-    name: {
-        type: String,
-        required: [true, 'name is required'],
-        trim: true
     },
     email: {
         type: String,
