@@ -1,0 +1,87 @@
+.onboarding-overlay {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 1rem;
+  background-color: #252525;
+}
+
+.onboarding-card {
+  width: 100%;
+  max-width: 420px;
+
+  background-color: #f5f0e8;
+  color: #1f1f1f;
+
+  border-radius: 16px;
+  padding: 2rem;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.onboarding-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.onboarding-card p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.onboarding-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.onboarding-card label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.onboarding-card input {
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #cfc7bb;
+  font-size: 1rem;
+  outline: none;
+}
+
+.onboarding-card input:focus {
+  border-color: #8b6f47;
+}
+
+.onboarding-card button {
+  margin-top: 0.5rem;
+  padding: 0.85rem 1rem;
+
+  border: none;
+  border-radius: 8px;
+
+  background-color: #252525;
+  color: #f5f0e8;
+
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.onboarding-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.onboarding-error {
+  font-size: 0.85rem;
+  color: #b91c1c;
+}
