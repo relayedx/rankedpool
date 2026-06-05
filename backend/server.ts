@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import { connectDB } from './config/db'
 import { clerkMiddleware } from '@clerk/express';
 import userRoutes from './routes/pages'
+import cors from 'cors'
 
 // load env variables
 dotenv.config();
@@ -10,10 +11,14 @@ dotenv.config();
 // connect to DB & get server handle
 connectDB();
 const app = express();
-app.use(clerkMiddleware())
 
 // middleware
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+app.use(clerkMiddleware());
 
 //routes
 app.use('/api', userRoutes);
