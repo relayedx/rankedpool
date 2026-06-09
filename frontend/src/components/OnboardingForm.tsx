@@ -49,7 +49,7 @@ export function OnboardingForm({ onSubmitUsername }: OnboardingFormProps) {
         </p>
 
         <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">Username:</label>
 
           <input
             id="username"
