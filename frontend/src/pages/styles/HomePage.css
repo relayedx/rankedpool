@@ -1,0 +1,63 @@
+.home-page {
+    min-height: 100vh;
+    padding-bottom: 90px;
+}
+
+.user-profile-pic {
+    width: 75px;
+    height: auto;
+    display: block;
+}
+
+.user-username {
+    text-align: center;
+    font-family: Verdana;
+    margin-bottom: 3px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-rank-image {
+    width: 120px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.elo-bar {
+    width: 100%;
+    max-width: 400px;
+    height: 16px;
+    background-color: #333;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.elo-fill {
+    height: 100%;
+    background-color: white;
+    border-radius: 999px;
+}
+
+.elo-rating {
+    margin-top: 10px;
+}
+
+.report-match {
+    margin-top: 75px;
+    padding: 30px 55px;
+    font-family: Verdana;
+    font-size: large;
+    background-color: #F5F0E8;
+    border-radius: 999px;
+    border: none;
+}
+
+.report-match:hover {
+    cursor: pointer;
+    background-color: rgba(245, 240, 232, 0.8);
+}

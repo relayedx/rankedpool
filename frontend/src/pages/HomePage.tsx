@@ -1,6 +1,9 @@
 import { useAuth } from '@clerk/react'
 import { useEffect, useState } from 'react'
-import { OnboardingForm } from '../components/OnboardingForm';
+import { OnboardingForm } from '../components/OnboardingForm'
+import { MenuBar } from '../components/MenuBar'
+import { Link } from 'react-router-dom'
+import './styles/HomePage.css'
 
 type rankedpoolUser = {
   _id: string
@@ -22,11 +25,11 @@ export function HomePage() {
   const handleCreateUser = async (username: string) => {
     try {
       const token = await getToken();
-      const response = await fetch(`${API_URL}/user/onboarding`, {
+      const response = await fetch(`${API_URL}/api/user/onboarding`, {
         method: 'POST',
         headers: {
-          'content-type': 'application/json',
-          Authorization: `Bearer${token}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           username: username,
@@ -35,10 +38,6 @@ export function HomePage() {
 
       const data = await response.json();
 
-      if(!response.ok) {
-        console.log(data.error);
-      }
-
       setUser(data.user);
       setNeedsOnboarding(false);
 
@@ -46,7 +45,6 @@ export function HomePage() {
       console.log(error);
     }
   }
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -65,8 +63,12 @@ export function HomePage() {
         const data = await response.json()
         const { needsOnboarding, user } = data
 
+        console.log(needsOnboarding);
+        console.log(user);
         setNeedsOnboarding(needsOnboarding);
-        setUser(user);
+        if (!needsOnboarding) {
+          setUser(user);
+        }
 
       } catch (error) {
           console.log(error);
@@ -76,13 +78,13 @@ export function HomePage() {
     }
 
     fetchUser()
-  }, [])
+  }, [needsOnboarding])
 
   if (loading) {
     return (
       <>
         <p>Loading...</p>
-      </>``
+      </>
     )
   } 
 
@@ -90,6 +92,24 @@ export function HomePage() {
     return (
       <>
         <OnboardingForm onSubmitUsername={handleCreateUser}/>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <div className="home-page">
+          <img className="user-profile-pic" src={user.profilePicture} />
+          <h2 className="user-username">{user.username}</h2>
+          <div className="container">
+            <img className="user-rank-image" src={`/images/rankedpool-${user.rank}.png`} alt={`${user.rank} image`}/>
+            <div className="elo-bar">
+              <div className="elo-fill" style={{width: `${user.elo}%`}}></div>
+            </div>
+            <p className="elo-rating">{`${user.elo}`} / 100</p>
+            <button className="report-match">Report Match</button>
+          </div>
+          <MenuBar />
+        </div>
       </>
     )
   }
