@@ -45,4 +45,4 @@ const matchSchema = new mongoose.Schema({
     }
   }, { timestamps: true })
   
-  export const Match = mongoose.model('Match', matchSchema)
+  export const Match = mongoose.model('Match', matchSchema);

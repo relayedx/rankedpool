@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export type Rank = 'bronze' | 'iron' | 'silver' | 'gold' | 'diamond'
+export type Rank = 'iron' | 'bronze' | 'silver' | 'gold' | 'diamond'
 
 const userSchema = new mongoose.Schema({
     clerkId: {
@@ -26,19 +26,13 @@ const userSchema = new mongoose.Schema({
     },
     rank: {
         type: String,
-        enum: ['bronze', 'iron', 'silver', 'gold', 'diamond'],
-        default: 'bronze'
+        enum: ['iron', 'bronze', 'silver', 'gold', 'diamond'],
+        default: 'iron'
     },
     elo: {
         type: Number,
         default: 0
     },
-    matchHistory: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref:'Match'
-        }
-    ],
     profilePicture: {
         type: String,
         default: 'images/default-profile-pic.png'
