@@ -2,7 +2,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 import { connectDB } from './config/db'
 import { clerkMiddleware } from '@clerk/express';
-import userRoutes from './routes/pages'
+import pagesRoutes from './routes/pages'
+import matchReportRoutes from './routes/matchReports'
 import cors from 'cors'
 
 // load env variables
@@ -22,7 +23,8 @@ app.use(cors({
 app.use(clerkMiddleware());
 
 //routes
-app.use('/api', userRoutes);
+app.use('/api', pagesRoutes);
+app.use('/api', matchReportRoutes);
 
 // check server
 app.get('/', (req, res) => {
