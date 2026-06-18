@@ -165,7 +165,7 @@ export const acceptMatchReport = async (req: Request, res: Response) => {
         }
 
         // find matchReport that user is accepting
-        const { matchReportId } = req.body;
+        const { matchReportId } = req.params;
         if (!matchReportId) {
             return res.status(400).json({ error: 'matchReportId is required' });
         }
@@ -267,7 +267,7 @@ export const declineMatchReport = async (req: Request, res: Response) => {
         }
 
         // find matchReport that user is accepting
-        const { matchReportId } = req.body;
+        const { matchReportId } = req.params;
         if (!matchReportId) {
             return res.status(400).json({ error: 'matchReportId is required' });
         }
