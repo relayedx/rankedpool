@@ -64,7 +64,7 @@ export const createUser = async(req: Request, res: Response) => {
             clerkId: userId,
             email: email,
             username: username,
-            rank: 'bronze',
+            rank: 'iron',
             elo: 0
         });
 
