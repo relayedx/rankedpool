@@ -14,9 +14,14 @@ export function OnboardingForm({ onSubmitUsername }: OnboardingFormProps) {
     e.preventDefault();
 
     const trimmedUsername = username.trim();
-
     if (!trimmedUsername) {
       setError('Username is required');
+      return
+    }
+
+    const usernameRegex = /^[a-zA-Z0-9][a-zA-Z0-9_]{0,19}$/;
+    if (!usernameRegex.test(trimmedUsername)) {
+      setError('Username must only contain characters: "a-z", "0-9", & "_"');
       return
     }
 
@@ -42,6 +47,7 @@ export function OnboardingForm({ onSubmitUsername }: OnboardingFormProps) {
     <div className="onboarding-overlay">
       <div className="onboarding-card">
         <h2>Create your RankedPool username</h2>
+
 
         <p>
           Choose the username other players will see on profiles,
