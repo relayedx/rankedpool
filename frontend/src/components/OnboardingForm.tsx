@@ -68,7 +68,7 @@ export function OnboardingForm({ onSubmitUsername }: OnboardingFormProps) {
           {error && <span className="onboarding-error">{error}</span>}
 
           <button type="submit" disabled={submitting}>
-            {submitting ? 'Creating...' : 'Continue'}
+            {submitting ? 'Creating...' : 'Confirm'}
           </button>
         </form>
       </div>
