@@ -1,0 +1,78 @@
+.pending-match-report-overlay {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 1rem;
+  background-color: #252525;
+}
+
+.pending-match-report-card {
+  width: 100%;
+  max-width: 420px;
+
+  background-color: #f5f0e8;
+  color: black;
+
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+
+  font-family: Verdana, sans-serif;
+}
+
+.pending-match-report-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.sender-username {
+  text-align: center;
+}
+
+.sender-profile-picture {
+  width: 75px;
+  height: auto;
+  display: block;
+}
+
+.sender-info-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.winner-username {
+  margin-bottom: 5px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.button-container button {
+  padding: 15px;
+  border-radius: 45px; 
+  border: none;
+  color: white;
+  font-size: large;
+}
+
+.button-container button:hover {
+  opacity: 0.5
+}
+
+.accept-button {
+  background-color: green;
+  margin-right: 25px;
+}
+
+.decline-button {
+  background-color: red;
+}
