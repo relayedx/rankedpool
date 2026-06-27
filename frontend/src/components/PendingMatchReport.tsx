@@ -17,7 +17,7 @@ type MatchReport = {
     loser: string;
     status: 'pending';
     gameType: '8-ball' | '9-ball' | '10-ball';
-  } | null;
+  };
   handleAccept: (matchReportId: string) => Promise<void>;
   handleDecline: (matchReportId: string) => Promise<void>;
 };
