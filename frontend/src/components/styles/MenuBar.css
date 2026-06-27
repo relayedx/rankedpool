@@ -15,11 +15,29 @@
 
 /* targeting menu links */
 .menu-container a {
+    font-family: Verdana;
     text-decoration: none;
     color: inherit;
     border: 1px solid #F5F0E8;
-    padding: 0.75rem 1rem;
-    min-width: 90px;
+    flex: 1;
+    max-width: 120px;
+    min-width: 0;
+    padding: 0.75rem 0.7rem;
     text-align: center;
     margin-top: auto;
+}
+
+.menu-container a.active-menu-link {
+    background-color: rgba(245, 240, 232, 0.18);
+}
+
+@media (max-width: 360px) {
+    .menu-container {
+        padding-inline: 0.6rem;
+    }
+
+    .menu-container a {
+        padding-inline: 0.35rem;
+        font-size: 0.9rem;
+    }
 }

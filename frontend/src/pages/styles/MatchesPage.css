@@ -1,0 +1,229 @@
+.matches-page {
+  min-height: 100vh;
+  padding: 1.5rem 1rem 6.5rem;
+  background:
+    radial-gradient(circle at top left, rgba(245, 240, 232, 0.11), transparent 32rem),
+    #252525;
+  color: #f5f0e8;
+  font-family: Verdana, sans-serif;
+}
+
+.matches-header {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  min-height: 94px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.matches-profile-pic {
+  position: absolute;
+  left: 0;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f5f0e8;
+  border: 2px solid rgba(245, 240, 232, 0.75);
+}
+
+.matches-username {
+  width: min(68%, 320px);
+  overflow-wrap: anywhere;
+  text-align: center;
+  font-size: clamp(1.8rem, 9vw, 2.8rem);
+  line-height: 1.05;
+  font-weight: 500;
+}
+
+.match-history {
+  width: 100%;
+  max-width: 520px;
+  margin: 2.75rem auto 0;
+}
+
+.match-history h2 {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: #f5f0e8;
+  font-size: clamp(1.35rem, 6vw, 2rem);
+  line-height: 1.2;
+  text-align: center;
+  font-weight: 500;
+}
+
+.match-history h2::before,
+.match-history h2::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background-color: rgba(245, 240, 232, 0.55);
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.match-row {
+  display: grid;
+  grid-template-columns: minmax(74px, 1fr) minmax(68px, 0.9fr) minmax(56px, 0.75fr) minmax(92px, 1fr);
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 64px;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgba(245, 240, 232, 0.55);
+  border-radius: 8px;
+  background-color: rgba(245, 240, 232, 0.06);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+}
+
+.match-row-win {
+  border-left: 4px solid #5dd17b;
+}
+
+.match-row-loss {
+  border-left: 4px solid #ff6961;
+}
+
+.match-player,
+.match-opponent {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.match-player {
+  gap: 0.45rem;
+}
+
+.match-opponent {
+  justify-self: end;
+  flex-direction: column;
+  gap: 0.18rem;
+  text-align: center;
+}
+
+.match-avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f5f0e8;
+  border: 1px solid rgba(245, 240, 232, 0.75);
+}
+
+.match-opponent-avatar {
+  width: 32px;
+  height: 32px;
+  flex-basis: 32px;
+}
+
+.match-game-type,
+.match-date {
+  color: rgba(245, 240, 232, 0.76);
+  font-size: 0.72rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.match-elo-change,
+.match-result,
+.match-opponent-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(0.82rem, 3.3vw, 1rem);
+  line-height: 1.15;
+}
+
+.match-elo-change,
+.match-result {
+  text-align: center;
+}
+
+.match-row-win .match-result,
+.match-row-win .match-elo-change {
+  color: #83e69c;
+}
+
+.match-row-loss .match-result,
+.match-row-loss .match-elo-change {
+  color: #ff8b84;
+}
+
+.match-opponent-name {
+  max-width: 100%;
+  color: rgba(245, 240, 232, 0.84);
+  font-size: 0.7rem;
+}
+
+.matches-empty-state,
+.matches-state {
+  width: min(100%, 420px);
+  margin: 26vh auto 0;
+  padding: 1.25rem;
+  border: 1px solid rgba(245, 240, 232, 0.4);
+  border-radius: 8px;
+  background-color: rgba(245, 240, 232, 0.06);
+  color: #f5f0e8;
+  text-align: center;
+  font-family: Verdana, sans-serif;
+}
+
+.matches-empty-state {
+  margin-top: 1rem;
+}
+
+.matches-state-error {
+  color: #ffb4ae;
+  border-color: rgba(255, 105, 97, 0.5);
+}
+
+@media (max-width: 420px) {
+  .matches-page {
+    padding-inline: 0.75rem;
+  }
+
+  .matches-header {
+    min-height: 84px;
+  }
+
+  .matches-profile-pic {
+    width: 62px;
+    height: 62px;
+  }
+
+  .match-history {
+    margin-top: 2.1rem;
+  }
+
+  .match-row {
+    grid-template-columns: 64px minmax(54px, 0.8fr) minmax(44px, 0.65fr) minmax(74px, 0.9fr);
+    gap: 0.45rem;
+    padding-inline: 0.5rem;
+  }
+
+  .match-avatar {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .match-opponent-avatar {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+
+  .match-game-type,
+  .match-date {
+    font-size: 0.65rem;
+  }
+}

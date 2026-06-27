@@ -1,13 +1,28 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import './styles/MenuBar.css';
 
 export function MenuBar() {
   return (
     <>
       <div className="menu-container">
-        <Link to="/home" className="home-link">Home</Link>
-        <Link to="/matches" className="matches-link">Matches</Link>
-        <Link to="/friends" className="friends-link">Friends</Link>
+        <NavLink
+          to="/home"
+          className={({ isActive }) => `home-link${isActive ? ' active-menu-link' : ''}`}
+        >
+          Home
+        </NavLink>
+        <NavLink
+          to="/matches"
+          className={({ isActive }) => `matches-link${isActive ? ' active-menu-link' : ''}`}
+        >
+          Matches
+        </NavLink>
+        <NavLink
+          to="/friends"
+          className={({ isActive }) => `friends-link${isActive ? ' active-menu-link' : ''}`}
+        >
+          Friends
+        </NavLink>
       </div>
     </>
   )
