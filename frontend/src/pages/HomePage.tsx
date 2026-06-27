@@ -264,15 +264,8 @@ export function HomePage() {
       }
     }
 
-    
     fetchUser();
     fetchPendingMatchReport();
-    const interval = setInterval(() => {
-      fetchUser();
-      fetchPendingMatchReport(); 
-    }, 5000)
-
-    return () => clearInterval(interval);
   }, [renderUser, API_URL, getToken])
 
   useEffect(() => {
