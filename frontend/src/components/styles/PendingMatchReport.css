@@ -36,8 +36,10 @@
 
 .sender-profile-picture {
   width: 75px;
-  height: auto;
+  height: 75px;
   display: block;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .sender-info-container {
@@ -54,9 +56,11 @@
   display: flex;
   justify-content: center;
   text-align: center;
+  gap: 0.75rem;
 }
 
 .button-container button {
+  flex: 1;
   padding: 15px;
   border-radius: 45px; 
   border: none;
@@ -70,9 +74,18 @@
 
 .accept-button {
   background-color: green;
-  margin-right: 25px;
 }
 
 .decline-button {
   background-color: red;
+}
+
+@media (max-width: 360px) {
+  .pending-match-report-card {
+    padding: 1.35rem;
+  }
+
+  .pending-match-report-card h2 {
+    font-size: 1.3rem;
+  }
 }

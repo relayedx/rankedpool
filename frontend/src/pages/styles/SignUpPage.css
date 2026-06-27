@@ -3,8 +3,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
 }
 
 .clerk-card {
     background-color: #F5F0E8;
+    width: min(calc(100vw - 2rem), 420px);
 }
