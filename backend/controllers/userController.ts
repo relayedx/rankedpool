@@ -49,9 +49,11 @@ export const createUser = async(req: Request, res: Response) => {
 
         const { username } = req.body;
 
-        if (!username) {
+        if (!username || typeof username !== 'string') {
             return res.status(400).json({ error: 'Username is required' });
         }
+
+        const formattedUsername = username.toLowerCase().trim();
 
         const clerkUser = await clerkClient.users.getUser(userId);
         const email = clerkUser.emailAddresses[0]?.emailAddress;
@@ -63,13 +65,17 @@ export const createUser = async(req: Request, res: Response) => {
         const newUser = await User.create({
             clerkId: userId,
             email: email,
-            username: username,
+            username: formattedUsername,
             rank: 'iron',
             elo: 0
         });
 
         return res.status(201).json({ newUser });
     } catch (error) {
+        if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
+            return res.status(409).json({ error: 'Username or email is already in use' });
+        }
+
         return res.status(500).json({ error: error instanceof Error ? error.message : 'Failed to create user' });
     }
 }
