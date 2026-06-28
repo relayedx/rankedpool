@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
     res.send('server is running...');
 })
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 // allow server to listen for reqs
 app.listen(PORT, () => {
