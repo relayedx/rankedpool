@@ -290,3 +290,7 @@
     cursor: pointer;
     background-color: rgba(245, 240, 232, 0.8);
 }
+
+.user-rank-label {
+    margin-bottom: 10px;
+}
