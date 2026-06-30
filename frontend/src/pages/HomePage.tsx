@@ -368,6 +368,7 @@ export function HomePage() {
         <h2 className="user-username">{user.username}</h2>
         <div className="container">
           <img className="user-rank-image" src={`/images/rankedpool-${user.rank}.png`} alt={`${user.rank} image`}/>
+          <p className="user-rank-label">{`${user.rank}`}</p>
           <div className="elo-bar">
             <div className="elo-fill" style={{width: `${user.elo}%`}}></div>
           </div>

@@ -35,12 +35,12 @@ app.get('/', (req, res) => {
     res.send('server is running...');
 })
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 // allow server to listen for reqs
 app.listen(PORT, () => {
-    /*
     console.log(`Server has a new connection on port: ${PORT}`);
+    /*
     console.log('Secret exists:', !!process.env.CLERK_SECRET_KEY);
     console.log(`CORS origins: ${corsOrigins.join(', ')}`);
     */
