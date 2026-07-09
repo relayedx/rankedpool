@@ -57,12 +57,12 @@ const getEloDelta = (match: Match, didCurrentUserWin: boolean) => {
   } 
 
   // handle delta for demoting from higher rank
-  if ((eloBefore == 0 && eloAfter > 0) && !didCurrentUserWin) {
+  if ((eloAfter > eloBefore) && !didCurrentUserWin) {
     return `-20 elo`
   }
 
   // handle delta for rank up
-  if ((eloBefore > 0 && eloAfter == 0) && didCurrentUserWin) {
+  if ((eloBefore > eloAfter) && didCurrentUserWin) {
     return '+20 elo';
   }
 
