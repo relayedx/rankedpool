@@ -23,6 +23,12 @@ export function MenuBar() {
         >
           Friends
         </NavLink>
+        <NavLink
+          to="/leaderboard"
+          className={({ isActive }) => `leaderboard-link${isActive ? ' active-menu-link' : ''}`}
+        >
+          Leaderboard
+        </NavLink>
       </div>
     </>
   )

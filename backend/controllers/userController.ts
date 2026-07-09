@@ -3,6 +3,12 @@ import { getAuth } from '@clerk/express'
 import { Request, Response } from 'express'
 import { clerkClient } from '@clerk/express'
 
+const rankOrder = ['iron', 'bronze', 'silver', 'gold', 'diamond'] as const;
+
+const getRankValue = (rank: string) => {
+    return rankOrder.indexOf(rank as typeof rankOrder[number]);
+}
+
 // access: private
 export const getUser = async(req: Request, res: Response) => {
     try {
@@ -77,5 +83,38 @@ export const createUser = async(req: Request, res: Response) => {
         }
 
         return res.status(500).json({ error: error instanceof Error ? error.message : 'Failed to create user' });
+    }
+}
+
+// access: private
+export const getLeaderboard = async(req: Request, res: Response) => {
+    try {
+        const { userId } = getAuth(req);
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const players = await User.find({})
+            .select('username rank elo')
+            .lean();
+
+        const sortedPlayers = players.sort((playerA, playerB) => {
+            const rankDifference = getRankValue(playerB.rank) - getRankValue(playerA.rank);
+
+            if (rankDifference !== 0) {
+                return rankDifference;
+            }
+
+            if (playerB.elo !== playerA.elo) {
+                return playerB.elo - playerA.elo;
+            }
+
+            return playerA.username.localeCompare(playerB.username);
+        });
+
+        return res.status(200).json({ players: sortedPlayers });
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to get leaderboard' });
     }
 }

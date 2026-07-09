@@ -87,6 +87,7 @@ export function HomePage() {
   const [pendingMatchReport, setPendingMatchReport] = useState<PendingMatchReportData | null>(null);
   const [renderUser, setRenderUser] = useState(0);
   const [rankChangeAnimation, setRankChangeAnimation] = useState<RankChangeAnimation | null>(null);
+  const [rankPanelOpen, setRankPanelOpen] = useState(false);
   const previousUserRef = useRef<rankedpoolUser | null>(null);
   const rankAnimationId = useRef(0);
   
@@ -280,6 +281,22 @@ export function HomePage() {
     return () => window.clearTimeout(hideRankAnimation);
   }, [rankChangeAnimation])
 
+  useEffect(() => {
+    if (!rankPanelOpen) {
+      return;
+    }
+
+    const closeRankPanel = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setRankPanelOpen(false);
+      }
+    }
+
+    window.addEventListener('keydown', closeRankPanel);
+
+    return () => window.removeEventListener('keydown', closeRankPanel);
+  }, [rankPanelOpen])
+
   if (loading) {
     return (
       <div className="home-page home-loading-page">
@@ -367,14 +384,65 @@ export function HomePage() {
         <img className="user-profile-pic" src={user.profilePicture} />
         <h2 className="user-username">{user.username}</h2>
         <div className="container">
-          <img className="user-rank-image" src={`/images/rankedpool-${user.rank}.png`} alt={`${user.rank} image`}/>
-          <p className="user-rank-label">{`${user.rank}`}</p>
+          <button
+            className="user-rank-button"
+            type="button"
+            onClick={() => setRankPanelOpen(true)}
+            aria-label="View rank ladder"
+          >
+            <img className="user-rank-image" src={`/images/rankedpool-${user.rank}.png`} alt={`${user.rank} rank`}/>
+            <p className="user-rank-label">{`${user.rank}`}</p>
+          </button>
           <div className="elo-bar">
             <div className="elo-fill" style={{width: `${user.elo}%`}}></div>
           </div>
           <p className="elo-rating">{`${user.elo}`} / 100</p>
           <button className="report-match" onClick={() => setReportingMatch(true)}>Report Match</button>
         </div>
+        {rankPanelOpen && (
+          <div
+            className="rank-modal-backdrop"
+            onClick={() => setRankPanelOpen(false)}
+          >
+            <section
+              className="rank-modal-panel"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="rank-modal-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                className="rank-modal-close"
+                type="button"
+                onClick={() => setRankPanelOpen(false)}
+                aria-label="Close rank ladder"
+              >
+                x
+              </button>
+              <h2 className="rank-modal-title" id="rank-modal-title">Rank ladder</h2>
+              <div className="rank-modal-track" aria-label="iron to diamond rank order">
+                {rankOrder.map((rank, index) => (
+                  <div className="rank-modal-progress-segment" key={rank}>
+                    <div className={`rank-modal-rank${user.rank === rank ? ' current-rank' : ''}`}>
+                      <img
+                        className="rank-modal-badge"
+                        src={`/images/rankedpool-${rank}.png`}
+                        alt={`${rank} rank`}
+                      />
+                      <span className="rank-modal-rank-name">{rank}</span>
+                      {user.rank === rank && (
+                        <span className="rank-modal-current-label">current</span>
+                      )}
+                    </div>
+                    {index < rankOrder.length - 1 && (
+                      <span className="rank-modal-arrow" aria-hidden="true">&gt;</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        )}
         <MenuBar />
       </div>
     </>

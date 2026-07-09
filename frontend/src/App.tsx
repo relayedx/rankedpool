@@ -6,6 +6,7 @@ import { SignUpPage } from './pages/SignUpPage'
 import { HomePage } from './pages/HomePage'
 import { MatchesPage } from './pages/MatchesPage'
 import { FriendsPage } from './pages/FriendsPage'
+import { LeaderboardPage } from './pages/LeaderboardPage'
  
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/matches" element={<MatchesPage />} />
         <Route path="/friends" element={<FriendsPage />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
       </Routes>
     </>
   )
