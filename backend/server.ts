@@ -4,6 +4,7 @@ import { connectDB } from './config/db'
 import { clerkMiddleware } from '@clerk/express';
 import pagesRoutes from './routes/pages'
 import matchReportRoutes from './routes/matchReports'
+import friendRoutes from './routes/friends'
 import cors from 'cors'
 
 // load env variables
@@ -29,6 +30,7 @@ app.use(clerkMiddleware());
 //routes
 app.use('/api', pagesRoutes);
 app.use('/api', matchReportRoutes);
+app.use('/api', friendRoutes);
 
 // check server
 app.get('/', (req, res) => {

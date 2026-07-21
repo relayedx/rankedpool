@@ -36,6 +36,17 @@ const userSchema = new mongoose.Schema({
     profilePicture: {
         type: String,
         default: 'images/default-profile-pic.png'
+    },
+    profilePictureKey: {
+        type: String,
+        default: ''
+    },
+    friends: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }],
+        default: []
     }
 
 }, {timestamps: true})
