@@ -1,9 +1,11 @@
 import { useAuth } from '@clerk/react'
 import { type FormEvent, useCallback, useEffect, useState } from 'react'
 import { MenuBar } from '../components/MenuBar'
+import './styles/MatchesPage.css'
 import './styles/FriendsPage.css'
 
 type Rank = 'iron' | 'bronze' | 'silver' | 'gold' | 'diamond';
+type GameType = '8-ball' | '9-ball' | '10-ball';
 type RelationshipStatus = 'none' | 'friend' | 'outgoing_pending' | 'incoming_pending';
 type FriendRequestAction = 'accept' | 'decline';
 
@@ -24,6 +26,25 @@ type FriendRequest = {
   sender: Player;
   receiver: Player;
   status: 'pending';
+  createdAt: string;
+};
+
+type MatchPlayer = {
+  _id: string;
+  username: string;
+  profilePicture: string;
+  rank: Rank;
+};
+
+type Match = {
+  _id: string;
+  winner: MatchPlayer;
+  loser: MatchPlayer;
+  gameType: GameType;
+  winnerEloBefore: number;
+  winnerEloAfter: number;
+  loserEloBefore: number;
+  loserEloAfter: number;
   createdAt: string;
 };
 
@@ -63,7 +84,37 @@ type RemoveFriendResponse = {
   error?: string;
 };
 
+type FriendMatchesResponse = {
+  friend?: Player;
+  matches?: Match[];
+  error?: string;
+};
+
 const formatRank = (rank: Rank) => rank.toUpperCase();
+
+const rankOrder: Rank[] = ['iron', 'bronze', 'silver', 'gold', 'diamond'];
+
+const getRankValue = (rank: Rank) => rankOrder.indexOf(rank);
+
+const getFriendRankings = (currentUser: Player | null, friends: Player[]) => {
+  const players = currentUser
+    ? [currentUser, ...friends.filter(friend => friend._id !== currentUser._id)]
+    : friends;
+
+  return [...players].sort((playerA, playerB) => {
+    const rankDifference = getRankValue(playerB.rank) - getRankValue(playerA.rank);
+
+    if (rankDifference !== 0) {
+      return rankDifference;
+    }
+
+    if (playerB.elo !== playerA.elo) {
+      return playerB.elo - playerA.elo;
+    }
+
+    return playerA.username.localeCompare(playerB.username);
+  });
+};
 
 const getProfilePictureSrc = (profilePicture: string) => {
   if (profilePicture.startsWith('http') || profilePicture.startsWith('/')) {
@@ -71,6 +122,35 @@ const getProfilePictureSrc = (profilePicture: string) => {
   }
 
   return `/${profilePicture}`;
+};
+
+const formatUsername = (username: string) => `@${username}`;
+
+const formatMatchDate = (createdAt: string) => {
+  return new Intl.DateTimeFormat('en', {
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(createdAt));
+};
+
+const getEloDelta = (match: Match, didSelectedFriendWin: boolean) => {
+  const eloBefore = didSelectedFriendWin ? match.winnerEloBefore : match.loserEloBefore;
+  const eloAfter = didSelectedFriendWin ? match.winnerEloAfter : match.loserEloAfter;
+  const delta = eloAfter - eloBefore;
+
+  if (eloBefore == 0 && eloAfter == 0) {
+    return `-10 elo`
+  }
+
+  if ((eloAfter > eloBefore) && !didSelectedFriendWin) {
+    return `-20 elo`
+  }
+
+  if ((eloBefore > eloAfter) && didSelectedFriendWin) {
+    return '+20 elo';
+  }
+
+  return `${delta > 0 ? '+' : ''}${delta} elo`;
 };
 
 const getSearchActionLabel = (player: SearchPlayer, isRequesting: boolean) => {
@@ -97,6 +177,7 @@ export function FriendsPage() {
   const { getToken } = useAuth();
   const API_URL = import.meta.env.VITE_API_URL;
   const [friends, setFriends] = useState<Player[]>([]);
+  const [currentUser, setCurrentUser] = useState<Player | null>(null);
   const [incomingRequests, setIncomingRequests] = useState<FriendRequest[]>([]);
   const [outgoingRequests, setOutgoingRequests] = useState<FriendRequest[]>([]);
   const [searchResults, setSearchResults] = useState<SearchPlayer[]>([]);
@@ -106,6 +187,10 @@ export function FriendsPage() {
   const [requestingPlayerId, setRequestingPlayerId] = useState('');
   const [respondingRequestId, setRespondingRequestId] = useState('');
   const [removingFriendId, setRemovingFriendId] = useState('');
+  const [viewingFriend, setViewingFriend] = useState<Player | null>(null);
+  const [friendMatches, setFriendMatches] = useState<Match[]>([]);
+  const [friendMatchesLoading, setFriendMatchesLoading] = useState(false);
+  const [friendMatchesError, setFriendMatchesError] = useState('');
   const [pendingRequestsOpen, setPendingRequestsOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
   const [loading, setLoading] = useState(true);
@@ -113,6 +198,7 @@ export function FriendsPage() {
   const trimmedSearchUsername = searchUsername.trim();
   const showingSearchResults = activeSearchUsername.length > 0;
   const pendingRequestCount = incomingRequests.length + outgoingRequests.length;
+  const rankedFriends = getFriendRankings(currentUser, friends);
 
   const fetchFriends = useCallback(async() => {
     const token = await getToken();
@@ -135,6 +221,7 @@ export function FriendsPage() {
     }
 
     setCurrentUserId(userData.user._id);
+    setCurrentUser(userData.user);
 
     const friendsResponse = await fetch(`${API_URL}/api/friends`, {
       method: 'GET',
@@ -338,11 +425,54 @@ export function FriendsPage() {
           relationshipStatus: 'none'
         };
       }));
+
+      if (viewingFriend?._id === friendId) {
+        setViewingFriend(null);
+        setFriendMatches([]);
+        setFriendMatchesError('');
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to remove friend');
     } finally {
       setRemovingFriendId('');
     }
+  }
+
+  const handleViewFriendMatches = async(friend: Player) => {
+    try {
+      setViewingFriend(friend);
+      setFriendMatches([]);
+      setFriendMatchesError('');
+      setFriendMatchesLoading(true);
+
+      const token = await getToken();
+      const friendMatchesResponse = await fetch(`${API_URL}/api/friends/${friend._id}/matches`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const friendMatchesData = await friendMatchesResponse.json() as FriendMatchesResponse;
+
+      if (!friendMatchesResponse.ok) {
+        throw new Error(friendMatchesData.error || 'Failed to load friend matches');
+      }
+
+      setViewingFriend(friendMatchesData.friend ?? friend);
+      setFriendMatches(friendMatchesData.matches ?? []);
+    } catch (error) {
+      setFriendMatchesError(error instanceof Error ? error.message : 'Failed to load friend matches');
+    } finally {
+      setFriendMatchesLoading(false);
+    }
+  }
+
+  const closeFriendMatches = () => {
+    setViewingFriend(null);
+    setFriendMatches([]);
+    setFriendMatchesError('');
+    setFriendMatchesLoading(false);
   }
 
   useEffect(() => {
@@ -558,16 +688,16 @@ export function FriendsPage() {
           <section className="friends-section" aria-labelledby="friends-title">
             <div className="friends-title-row">
               <h2 id="friends-title">Friend Rankings</h2>
-              <span>{friends.length} added</span>
+              <span>{friends.length} friends</span>
             </div>
 
-            {friends.length === 0 ? (
+            {rankedFriends.length === 0 ? (
               <div className="friends-empty-state">
                 Search for players to start building your friends list.
               </div>
             ) : (
               <div className="friends-list">
-                {friends.map((friend, index) => {
+                {rankedFriends.map((friend, index) => {
                   const placement = index + 1;
                   const isCurrentUser = friend._id === currentUserId;
                   const isPodiumPlayer = placement <= 3;
@@ -593,14 +723,25 @@ export function FriendsPage() {
                       </div>
                       <div className="friend-row-actions">
                         <span className="friends-placement">#{placement}</span>
-                        <button
-                          className="friends-remove-button"
-                          type="button"
-                          onClick={() => handleRemoveFriend(friend._id)}
-                          disabled={isRemovingFriend}
-                        >
-                          {isRemovingFriend ? '...' : 'Remove'}
-                        </button>
+                        {!isCurrentUser && (
+                          <div className="friend-row-button-stack">
+                            <button
+                              className="friends-view-matches-button"
+                              type="button"
+                              onClick={() => handleViewFriendMatches(friend)}
+                            >
+                              View matches
+                            </button>
+                            <button
+                              className="friends-remove-button"
+                              type="button"
+                              onClick={() => handleRemoveFriend(friend._id)}
+                              disabled={isRemovingFriend}
+                            >
+                              {isRemovingFriend ? '...' : 'Remove'}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </article>
                   )
@@ -610,6 +751,91 @@ export function FriendsPage() {
           </section>
         )}
       </main>
+
+      {viewingFriend && (
+        <div className="friend-matches-modal-backdrop" onClick={closeFriendMatches}>
+          <section
+            className="friend-matches-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="friend-matches-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              className="friend-matches-close"
+              type="button"
+              onClick={closeFriendMatches}
+              aria-label="Close friend match history"
+            >
+              x
+            </button>
+
+            <header className="matches-header friend-matches-header">
+              <img
+                className="matches-profile-pic"
+                src={getProfilePictureSrc(viewingFriend.profilePicture)}
+                alt={`${viewingFriend.username} profile`}
+              />
+              <h1 className="matches-username">{viewingFriend.username}</h1>
+            </header>
+
+            <div className="match-history friend-match-history">
+              <h2 id="friend-matches-title">Match History</h2>
+
+              {friendMatchesLoading ? (
+                <div className="matches-empty-state">
+                  Loading match history...
+                </div>
+              ) : friendMatchesError ? (
+                <div className="matches-empty-state friend-matches-error" role="alert">
+                  {friendMatchesError}
+                </div>
+              ) : friendMatches.length === 0 ? (
+                <div className="matches-empty-state">
+                  No matches reported yet.
+                </div>
+              ) : (
+                <div className="match-list">
+                  {friendMatches.map(match => {
+                    const didSelectedFriendWin = viewingFriend._id === match.winner._id;
+                    const opponent = didSelectedFriendWin ? match.loser : match.winner;
+                    const resultLabel = didSelectedFriendWin ? 'Win' : 'Loss';
+
+                    return (
+                      <article
+                        key={match._id}
+                        className={`match-row ${didSelectedFriendWin ? 'match-row-win' : 'match-row-loss'}`}
+                      >
+                        <div className="match-player">
+                          <img
+                            className="match-avatar"
+                            src={getProfilePictureSrc(viewingFriend.profilePicture)}
+                            alt=""
+                          />
+                          <span className="match-game-type">{match.gameType}</span>
+                        </div>
+
+                        <p className="match-elo-change">{getEloDelta(match, didSelectedFriendWin)}</p>
+                        <p className="match-result">{resultLabel}</p>
+
+                        <div className="match-opponent">
+                          <span className="match-date">{formatMatchDate(match.createdAt)}</span>
+                          <img
+                            className="match-avatar match-opponent-avatar"
+                            src={getProfilePictureSrc(opponent.profilePicture)}
+                            alt={`${opponent.username} profile`}
+                          />
+                          <span className="match-opponent-name">{formatUsername(opponent.username)}</span>
+                        </div>
+                      </article>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
+      )}
 
       <MenuBar />
     </div>

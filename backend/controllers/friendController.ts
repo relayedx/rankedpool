@@ -2,6 +2,7 @@ import { getAuth } from '@clerk/express'
 import { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import { FriendRequest } from '../models/friendRequest'
+import { Match } from '../models/match'
 import { User } from '../models/user'
 
 const rankOrder = ['iron', 'bronze', 'silver', 'gold', 'diamond'] as const;
@@ -320,6 +321,51 @@ export const removeFriend = async(req: Request, res: Response) => {
         return res.status(200).json({ removedFriendId: friendId });
     } catch (error) {
         return res.status(500).json({ error: 'Failed to remove friend' });
+    }
+}
+
+export const getFriendMatches = async(req: Request, res: Response) => {
+    try {
+        const currentUser = await findCurrentUser(req);
+
+        if (!currentUser) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const friendId = req.params.friendId;
+
+        if (typeof friendId !== 'string' || !mongoose.Types.ObjectId.isValid(friendId)) {
+            return res.status(400).json({ error: 'Valid friendId is required' });
+        }
+
+        const friendIds = Array.isArray(currentUser.friends) ? currentUser.friends : [];
+        const areFriends = friendIds.some(existingFriendId => String(existingFriendId) === friendId);
+
+        if (!areFriends) {
+            return res.status(403).json({ error: 'You can only view matches for added friends' });
+        }
+
+        const friend = await User.findById(friendId)
+            .select('username rank elo profilePicture')
+            .lean();
+
+        if (!friend) {
+            return res.status(404).json({ error: 'Could not find friend' });
+        }
+
+        const matches = await Match.find({
+            $or: [
+                { winner: friend._id },
+                { loser: friend._id }
+            ]
+        })
+            .populate('winner', 'username profilePicture rank')
+            .populate('loser', 'username profilePicture rank')
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({ friend, matches });
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to get friend matches' });
     }
 }
 
